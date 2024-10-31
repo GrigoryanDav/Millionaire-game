@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, N
 import { ROUTE_CONSTANTS } from "./core/utils/constants";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import './styles/global.css'
 
 
 const App = () => {

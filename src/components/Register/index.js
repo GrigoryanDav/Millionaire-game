@@ -1,13 +1,32 @@
 import { Input, Form, Button, Flex } from "antd";
 import AuthWrapper from "../AuthWrapper";
-import registerBanner from '../../core/images/auth-register.jpg'
-import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../services/firebase";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTE_CONSTANTS } from "../../core/utils/constants";
+import { useState } from "react";
+import registerBanner from '../../core/images/auth-register.jpg'
 
 const Register = () => {
+    const [loading, setLoading] = useState(false)
+    const [form] = Form.useForm()
+    const navigate = useNavigate()
+
+    const handleRegister = async (values) => {
+        setLoading(true)
+        const { email, password } = values
+        try {
+            await createUserWithEmailAndPassword(auth, email, password)
+            navigate(ROUTE_CONSTANTS.LOGIN)
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setLoading(false)
+        }
+    }
     return (
         <AuthWrapper title='Sign Up' banner={registerBanner}>
-            <Form layout="vertical">
+            <Form layout="vertical" form={form} onFinish={handleRegister}>
                 <Form.Item
                     label='User Name'
                     name='userName'
@@ -44,7 +63,7 @@ const Register = () => {
                 <Flex justify="flex-end" align="center" gap='10px'>
                     <Link to={ROUTE_CONSTANTS.LOGIN}>Sign In</Link>
 
-                    <Button>
+                    <Button type="primary" htmlType="submit" loading={loading}>
                         Sign Up
                     </Button>
                 </Flex>
