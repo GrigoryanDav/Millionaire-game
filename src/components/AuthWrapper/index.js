@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import './index.css'
 
 
-const AuthWrapper = ({ title, childen, banner }) => {
+const AuthWrapper = ({ title, children, banner }) => {
     const { Title } = Typography
     return (
         <div className="auth_wrapper">
@@ -13,7 +13,7 @@ const AuthWrapper = ({ title, childen, banner }) => {
                 <Title level={3}> 
                     {title}
                 </Title>
-                {childen}
+                {children}
             </div>
         </div>
     )

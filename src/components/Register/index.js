@@ -5,7 +5,7 @@ import registerBanner from '../../core/images/auth-register.jpg'
 const Register = () => {
     return (
         <AuthWrapper title='Sign Up' banner={registerBanner}>
-            <Form>
+            <Form layout="vertical">
                 <Form.Item
                 label='User Name'
                 name='userName'

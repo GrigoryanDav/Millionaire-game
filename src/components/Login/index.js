@@ -7,7 +7,7 @@ import loginBanner from '../../core/images/auth-login.jpg'
 const Login = () => {
     return (
         <AuthWrapper title='Sign In' banner={loginBanner}>
-            <Form>
+            <Form layout="vertical">
                 <Form.Item
                 label='Email'
                 name='email'
