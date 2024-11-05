@@ -23,11 +23,18 @@ const HomePage = ({ userInfo }) => {
         console.log('navigate')
     }
 
+    const handleUserName = ({ userName }) => {
+        if(userName) {
+            return userName
+        }
+        return 'dear user'
+    }
+
     return (
         <div className="home_container">
             <div className='home_img_container' style={{ backgroundImage: `url(${gameLogo})` }}></div>
             <h2>
-                Hello {userInfo.userName}․ <br />
+                Hello {handleUserName(userInfo)}․ <br />
                 Test your knowledge by playing who wants to be a millionaire game.
             </h2>
             <div className='home_button_container'>
