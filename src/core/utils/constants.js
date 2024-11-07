@@ -9,6 +9,8 @@ export const FIRESTORE_PATH_NAMES = {
     REGISTERED_USERS: 'registered_users'
 }
 
+export const regexpValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/
+
 export const questionsArray = [
     {
         question: "What is the capital of France?",

@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import { doc, setDoc } from 'firebase/firestore'
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTE_CONSTANTS, FIRESTORE_PATH_NAMES } from "../../core/utils/constants";
+import { ROUTE_CONSTANTS, FIRESTORE_PATH_NAMES, regexpValidation } from "../../core/utils/constants";
 import { useState } from "react";
 import registerBanner from '../../core/images/auth-register.jpg'
 
@@ -62,7 +62,11 @@ const Register = () => {
                     rules={[{
                         required: true,
                         message: 'Please input your Password'
-                    }]}
+                    },
+                {
+                    pattern: regexpValidation,
+                    message: 'Wrong Password'
+                }]}
                 >
                     <Input.Password placeholder="Password" />
                 </Form.Item>
