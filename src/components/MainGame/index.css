@@ -89,3 +89,13 @@
     border-radius: 20px;
     padding: 15px 30px;
 }
+
+@media(max-width: 425px) {
+    .options_container {
+        gap: 20px;
+    }
+
+    .options {
+        flex-direction: column;
+    }
+}
