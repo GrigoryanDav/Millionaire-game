@@ -27,11 +27,11 @@
     gap: 50px;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .options {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 20px;
@@ -81,4 +81,11 @@
 
 .round_container {
     color: white;
+}
+
+.round_amount {
+    color: white;
+    border: 3px solid goldenrod;
+    border-radius: 20px;
+    padding: 15px 30px;
 }
