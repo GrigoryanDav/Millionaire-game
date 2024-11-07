@@ -1,5 +1,5 @@
 import { questionsArray, ROUTE_CONSTANTS, FIRESTORE_PATH_NAMES } from "../../core/utils/constants"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { db } from "../../services/firebase"
 import { doc, updateDoc, arrayUnion } from "firebase/firestore"
@@ -20,6 +20,39 @@ const MainGame = ({ userInfo }) => {
     const navigate = useNavigate()
     const fixedWinningMoney = [8000, 32000, 128000]
     const { uid } = userInfo
+
+
+    useEffect(() => {
+        const savedGameState = JSON.parse(sessionStorage.getItem('gameState'))
+
+        if (savedGameState) {
+            setRemainingQuestions(savedGameState.remainingQuestions)
+            setCurrentQuestion(savedGameState.currentQuestion)
+            setCorrectAnswerCount(savedGameState.correctAnswerCount)
+            setPrizeAmount(savedGameState.prizeAmount)
+            setIsHelpUsed(savedGameState.isHelpUsed)
+        } else {
+            const initialQuestion = questionsArray[getRandomIndex(questionsArray)]
+            setRemainingQuestions([...questionsArray])
+            setCurrentQuestion(initialQuestion)
+        }
+    }, [])
+
+    const updateGameStateInSessionStorage = useCallback(() => {
+        const gameState = {
+            remainingQuestions,
+            currentQuestion,
+            correctAnswerCount,
+            prizeAmount,
+            isHelpUsed,
+        };
+        sessionStorage.setItem("gameState", JSON.stringify(gameState));
+    }, [correctAnswerCount, currentQuestion, isHelpUsed, prizeAmount, remainingQuestions]);
+
+    useEffect(() => {
+        updateGameStateInSessionStorage()
+    }, [updateGameStateInSessionStorage])
+
 
     const saveQuizProgress = async (questionData) => {
         try {
@@ -61,6 +94,7 @@ const MainGame = ({ userInfo }) => {
         }
 
         await saveQuizProgress(questionData)
+        updateGameStateInSessionStorage()
 
         if (questionData.isCorrect) {
             const newCorrectAnswerCount = correctAnswerCount + 1
@@ -78,7 +112,7 @@ const MainGame = ({ userInfo }) => {
 
             moveToNextQuestion()
         } else {
-            const winningAmount = getFixedWinningAmount(prizeAmount)
+            const winningAmount = getFixedWinningAmount(prizeAmount / 2)
             setGameEndMessage(`Wrong answer! You won ${winningAmount} AMD. Try again!`)
             setIsGameEndModalOpen(true)
             await saveFinalScore(winningAmount)
@@ -124,6 +158,7 @@ const MainGame = ({ userInfo }) => {
         setPrizeAmount(500)
         setIsHelpUsed({ hallHelp: false, fiftyFifty: false })
         setIsGameEndModalOpen(false)
+        sessionStorage.removeItem('gameState')
     }
 
     const exitGame = () => {
