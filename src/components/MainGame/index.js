@@ -84,30 +84,6 @@ const MainGame = ({ userInfo }) => {
             await saveFinalScore(winningAmount)
             return;
         }
-
-
-
-        // if (selectedIndex === currentQuestion.correctAnswer) {
-        //     const newCorrectAnswerCount = correctAnswerCount + 1
-        //     setCorrectAnswerCount(newCorrectAnswerCount)
-        //     const newPrizeAmount = Math.min(prizeAmount * 2, 1000000)
-        //     setPrizeAmount(newPrizeAmount)
-
-
-        //     if (newCorrectAnswerCount === 12) {
-        //         setGameEndMessage(`Congratulations! You won ${prizeAmount} AMD`)
-        //         setIsGameEndModalOpen(true)
-        //         return;
-        //     }
-
-        //     moveToNextQuestion()
-
-        // } else {
-        //     const winningAmount = getFixedWinningAmount(prizeAmount)
-        //     setGameEndMessage(`Wrong answer! You won ${winningAmount} AMD. Try again!`)
-        //     setIsGameEndModalOpen(true)
-        //     return;
-        // }
     }
 
     const moveToNextQuestion = () => {
