@@ -49,7 +49,7 @@ const App = () => {
                   <Route path={ROUTE_CONSTANTS.LOGIN} element={isAuth ? <Navigate to={ROUTE_CONSTANTS.HOMEPAGE} /> : <Login />} />
                   <Route path={ROUTE_CONSTANTS.REGISTER} element={isAuth ? <Navigate to={ROUTE_CONSTANTS.HOMEPAGE} /> : <Register />} />
                   <Route path={ROUTE_CONSTANTS.HOMEPAGE} element={isAuth ? <HomePage userInfo={userInfo} /> : <Navigate to={ROUTE_CONSTANTS.LOGIN} />} />
-                  <Route path={ROUTE_CONSTANTS.PLAY} element={isAuth ? <MainGame /> : <Navigate to={ROUTE_CONSTANTS.LOGIN} />} />
+                  <Route path={ROUTE_CONSTANTS.PLAY} element={isAuth ? <MainGame userInfo={userInfo} /> : <Navigate to={ROUTE_CONSTANTS.LOGIN} />} />
                 </>
               )
             )

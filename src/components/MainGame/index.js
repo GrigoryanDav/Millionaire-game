@@ -1,12 +1,14 @@
-import { questionsArray, ROUTE_CONSTANTS } from "../../core/utils/constants"
+import { questionsArray, ROUTE_CONSTANTS, FIRESTORE_PATH_NAMES } from "../../core/utils/constants"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { db } from "../../services/firebase"
+import { doc, updateDoc, arrayUnion } from "firebase/firestore"
 import GameEndModal from "../GameEndModal"
 import './index.css'
 
 const getRandomIndex = (array) => Math.floor(Math.random() * array.length)
 
-const MainGame = () => {
+const MainGame = ({ userInfo }) => {
     const [remainingQuestions, setRemainingQuestions] = useState([...questionsArray])
     const [currentQuestion, setCurrentQuestion] = useState(questionsArray[getRandomIndex(remainingQuestions)])
     const [correctAnswerCount, setCorrectAnswerCount] = useState(0)
@@ -17,6 +19,29 @@ const MainGame = () => {
 
     const navigate = useNavigate()
     const fixedWinningMoney = [8000, 32000, 128000]
+    const { uid } = userInfo
+
+    const saveQuizProgress = async (questionData) => {
+        try {
+            const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid)
+            await updateDoc(userRef, {
+                quizHistory: arrayUnion(questionData)
+            })
+        } catch (error) {
+            console.error('Error saving quiz data in Firebase:', error)
+        }
+    }
+
+    const saveFinalScore = async (finalScore) => {
+        try {
+            const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid)
+            await updateDoc(userRef, {
+                quizHistory: arrayUnion({ finalScore })
+            })
+        } catch (error) {
+            console.error('Error during saving final score:', error)
+        }
+    }
 
     const getFixedWinningAmount = (prizeAmount) => {
         for (let i = fixedWinningMoney.length - 1; i >= 0; i--) {
@@ -27,28 +52,62 @@ const MainGame = () => {
         return 0
     }
 
-    const handleAnswer = (selectedIndex) => {
-        if (selectedIndex === currentQuestion.correctAnswer) {
+    const handleAnswer = async (selectedIndex) => {
+
+        const questionData = {
+            question: currentQuestion.question,
+            selectedAnswer: currentQuestion.options[selectedIndex],
+            isCorrect: selectedIndex === currentQuestion.correctAnswer
+        }
+
+        await saveQuizProgress(questionData)
+
+        if (questionData.isCorrect) {
             const newCorrectAnswerCount = correctAnswerCount + 1
             setCorrectAnswerCount(newCorrectAnswerCount)
             const newPrizeAmount = Math.min(prizeAmount * 2, 1000000)
             setPrizeAmount(newPrizeAmount)
 
-            
+
             if (newCorrectAnswerCount === 12) {
                 setGameEndMessage(`Congratulations! You won ${prizeAmount} AMD`)
                 setIsGameEndModalOpen(true)
+                await saveFinalScore(prizeAmount)
                 return;
             }
 
             moveToNextQuestion()
-
         } else {
             const winningAmount = getFixedWinningAmount(prizeAmount)
             setGameEndMessage(`Wrong answer! You won ${winningAmount} AMD. Try again!`)
             setIsGameEndModalOpen(true)
+            await saveFinalScore(winningAmount)
             return;
         }
+
+
+
+        // if (selectedIndex === currentQuestion.correctAnswer) {
+        //     const newCorrectAnswerCount = correctAnswerCount + 1
+        //     setCorrectAnswerCount(newCorrectAnswerCount)
+        //     const newPrizeAmount = Math.min(prizeAmount * 2, 1000000)
+        //     setPrizeAmount(newPrizeAmount)
+
+
+        //     if (newCorrectAnswerCount === 12) {
+        //         setGameEndMessage(`Congratulations! You won ${prizeAmount} AMD`)
+        //         setIsGameEndModalOpen(true)
+        //         return;
+        //     }
+
+        //     moveToNextQuestion()
+
+        // } else {
+        //     const winningAmount = getFixedWinningAmount(prizeAmount)
+        //     setGameEndMessage(`Wrong answer! You won ${winningAmount} AMD. Try again!`)
+        //     setIsGameEndModalOpen(true)
+        //     return;
+        // }
     }
 
     const moveToNextQuestion = () => {
