@@ -23,6 +23,10 @@ const HomePage = ({ userInfo }) => {
         console.log('navigate')
     }
 
+    const handleHome = () => {
+        navigate('/')
+    }
+
     const handleUserName = ({ userName }) => {
         if(userName) {
             return userName
@@ -40,6 +44,7 @@ const HomePage = ({ userInfo }) => {
             <div className='home_button_container'>
                 <Button type='primary' onClick={handleStart}>Start</Button>
                 <Button type='primary' onClick={handleSignOut}>Log Out</Button>
+                <Button type='primary' onClick={handleHome}>Home</Button>
             </div>
             <Outlet />
         </div>
