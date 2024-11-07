@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { db } from "../../services/firebase"
 import { doc, updateDoc, arrayUnion } from "firebase/firestore"
+import { playSoundOnDemand, startBackgroundMusic, stopBackgroundMusic } from "../../core/Sounds-Logic/logic"
+import { SoundOutlined, MutedOutlined } from '@ant-design/icons'
 import GameEndModal from "../GameEndModal"
+import correctAnswerSound from '../../core/Sounds-Logic/sounds/correct-answer-sound.mp3'
+import wrongAnswerSound from '../../core/Sounds-Logic/sounds/wrong-answer-sound.mp3'
 import './index.css'
 
 const getRandomIndex = (array) => Math.floor(Math.random() * array.length)
@@ -16,13 +20,19 @@ const MainGame = ({ userInfo }) => {
     const [isHelpUsed, setIsHelpUsed] = useState({ hallHelp: false, fiftyFifty: false })
     const [isGameEndModalOpen, setIsGameEndModalOpen] = useState(false)
     const [gameEndMessage, setGameEndMessage] = useState('')
+    const [isMusicOn, setIsMusicOn] = useState(false)
 
     const navigate = useNavigate()
     const fixedWinningMoney = [8000, 32000, 128000]
     const { uid } = userInfo
 
-
     useEffect(() => {
+        if (isMusicOn) {
+            startBackgroundMusic()
+        } else {
+            stopBackgroundMusic()
+        }
+
         const savedGameState = JSON.parse(sessionStorage.getItem('gameState'))
 
         if (savedGameState) {
@@ -36,7 +46,7 @@ const MainGame = ({ userInfo }) => {
             setRemainingQuestions([...questionsArray])
             setCurrentQuestion(initialQuestion)
         }
-    }, [])
+    }, [isMusicOn])
 
     const updateGameStateInSessionStorage = useCallback(() => {
         const gameState = {
@@ -85,6 +95,12 @@ const MainGame = ({ userInfo }) => {
         return 0
     }
 
+    const playSound = (sound) => {
+        if (isMusicOn) {
+            playSoundOnDemand(sound)
+        }
+    }
+
     const handleAnswer = async (selectedIndex) => {
 
         const questionData = {
@@ -97,6 +113,7 @@ const MainGame = ({ userInfo }) => {
         updateGameStateInSessionStorage()
 
         if (questionData.isCorrect) {
+            playSound(correctAnswerSound)
             const newCorrectAnswerCount = correctAnswerCount + 1
             setCorrectAnswerCount(newCorrectAnswerCount)
             const newPrizeAmount = Math.min(prizeAmount * 2, 1000000)
@@ -112,6 +129,7 @@ const MainGame = ({ userInfo }) => {
 
             moveToNextQuestion()
         } else {
+            playSound(wrongAnswerSound)
             const winningAmount = getFixedWinningAmount(prizeAmount / 2)
             setGameEndMessage(`Wrong answer! You won ${winningAmount} AMD. Try again!`)
             setIsGameEndModalOpen(true)
@@ -151,6 +169,19 @@ const MainGame = ({ userInfo }) => {
         }
     }
 
+    const toggleMusic = () => {
+        setIsMusicOn((prev) => {
+            const newState = !prev
+
+            if (newState) {
+                startBackgroundMusic()
+            } else {
+                stopBackgroundMusic()
+            }
+            return newState
+        })
+    }
+
     const resetGame = () => {
         setRemainingQuestions([...questionsArray])
         setCurrentQuestion(questionsArray[getRandomIndex(questionsArray)])
@@ -159,10 +190,12 @@ const MainGame = ({ userInfo }) => {
         setIsHelpUsed({ hallHelp: false, fiftyFifty: false })
         setIsGameEndModalOpen(false)
         sessionStorage.removeItem('gameState')
+        setIsMusicOn(false)
     }
 
     const exitGame = () => {
         navigate(ROUTE_CONSTANTS.HOMEPAGE)
+        resetGame()
     }
 
     return (
@@ -201,14 +234,17 @@ const MainGame = ({ userInfo }) => {
                         ) : null}
                     </button>
                 </div>
-                <div className="help_container">
-                    <button className="help" onClick={handlefiftyFifty} disabled={isHelpUsed.fiftyFifty}>50/50</button>
-                    <button className="help" onClick={handleHallHelp} disabled={isHelpUsed.hallHelp}>Hall help</button>
-                </div>
-                <div className="round_amount">
-                    {prizeAmount} AMD
-                </div>
+            </div>
+            <div className="help_container">
+                <button className="help" onClick={handlefiftyFifty} disabled={isHelpUsed.fiftyFifty}>50/50</button>
+                <button className="help" onClick={handleHallHelp} disabled={isHelpUsed.hallHelp}>Hall help</button>
+            </div>
+            <div className="round_amount">
+                {prizeAmount} AMD
+            </div>
+            <div className="round_sound_container">
                 <div className="round_container">{correctAnswerCount + 1}/12</div>
+                <div className="sound-_toggle" onClick={toggleMusic}>{isMusicOn ? <SoundOutlined className="sound_icon" /> : <MutedOutlined className="sound_icon" />}</div>
             </div>
 
             <GameEndModal
