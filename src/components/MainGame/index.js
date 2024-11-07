@@ -106,7 +106,6 @@ const MainGame = ({ userInfo }) => {
                 .map((option, index) => index)
                 .filter(index => index !== correctAnswerIndex)
             const remainingIncorrectIndex = incorrectOptions[getRandomIndex(incorrectOptions)]
-            console.log(remainingIncorrectIndex)
             const newOptions = currentQuestion.options.map((option, index) => {
                 if (index === correctAnswerIndex || index === remainingIncorrectIndex) {
                     return option
