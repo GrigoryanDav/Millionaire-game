@@ -1,5 +1,5 @@
 import { Input, Form, Button, Flex } from "antd";
-import AuthWrapper from "../AuthWrapper";
+import AuthWrapper from "../../components/AuthWrapper";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../services/firebase";
 import { doc, setDoc } from 'firebase/firestore'

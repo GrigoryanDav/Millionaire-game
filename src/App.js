@@ -5,12 +5,12 @@ import { auth, db } from "./services/firebase";
 import { doc, getDoc } from 'firebase/firestore'
 import { AuthContext } from "./context/authContext";
 import { useCallback, useEffect, useState } from "react";
-import HomePage from "./components/HomePage";
-import Login from "./components/Login";
+import HomePage from "./pages/HomePage";
+import Login from "./pages/Login";
 import LoadingWrapper from "./components/LoadingWrapper";
-import MainGame from "./components/MainGame";
+import MainGame from "./pages/MainGame";
 import MainLayout from "./components/MainLayout";
-import Register from "./components/Register";
+import Register from "./pages/Register";
 import './styles/global.css'
 
 

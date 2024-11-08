@@ -1,4 +1,4 @@
-import AuthWrapper from "../AuthWrapper"
+import AuthWrapper from "../../components/AuthWrapper"
 import { Form, Input, Button, Flex, notification } from 'antd'
 import { useState } from "react"
 import { signInWithEmailAndPassword } from 'firebase/auth'

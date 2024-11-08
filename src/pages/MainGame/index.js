@@ -5,7 +5,7 @@ import { db } from "../../services/firebase"
 import { doc, updateDoc, arrayUnion } from "firebase/firestore"
 import { playSoundOnDemand, startBackgroundMusic, stopBackgroundMusic } from "../../core/Sounds-Logic/logic"
 import { SoundOutlined, MutedOutlined } from '@ant-design/icons'
-import GameEndModal from "../GameEndModal"
+import GameEndModal from "../../components/GameEndModal"
 import correctAnswerSound from '../../core/Sounds-Logic/sounds/correct-answer-sound.mp3'
 import wrongAnswerSound from '../../core/Sounds-Logic/sounds/wrong-answer-sound.mp3'
 import './index.css'
@@ -243,7 +243,7 @@ const MainGame = ({ userInfo }) => {
                 {prizeAmount} AMD
             </div>
             <div className="round_sound_container">
-                <div className="round_container">{correctAnswerCount + 1}/12</div>
+                <div className="round_container">{Math.min(correctAnswerCount + 1, 12)}/12</div>
                 <div className="sound-_toggle" onClick={toggleMusic}>{isMusicOn ? <SoundOutlined className="sound_icon" /> : <MutedOutlined className="sound_icon" />}</div>
             </div>
 
