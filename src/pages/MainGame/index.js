@@ -21,6 +21,7 @@ const MainGame = ({ userInfo }) => {
     const [isGameEndModalOpen, setIsGameEndModalOpen] = useState(false)
     const [gameEndMessage, setGameEndMessage] = useState('')
     const [isMusicOn, setIsMusicOn] = useState(false)
+    const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null)
 
     const navigate = useNavigate()
     const fixedWinningMoney = [8000, 32000, 128000]
@@ -102,6 +103,7 @@ const MainGame = ({ userInfo }) => {
     }
 
     const handleAnswer = async (selectedIndex) => {
+        setSelectedAnswerIndex(selectedIndex)
 
         const questionData = {
             question: currentQuestion.question,
@@ -142,6 +144,7 @@ const MainGame = ({ userInfo }) => {
         const newRemainingQuestions = remainingQuestions.filter(q => q !== currentQuestion)
         setRemainingQuestions(newRemainingQuestions)
         setCurrentQuestion(newRemainingQuestions[getRandomIndex(newRemainingQuestions)])
+        setSelectedAnswerIndex(null)
     }
 
     const handleHallHelp = () => {
@@ -182,6 +185,11 @@ const MainGame = ({ userInfo }) => {
         })
     }
 
+    const getButtonColor = (index) => {
+        if (selectedAnswerIndex === null) return ''
+        return index === selectedAnswerIndex ? (index === currentQuestion.correctAnswer ? 'green' : 'red') : ''
+    }
+
     const resetGame = () => {
         setRemainingQuestions([...questionsArray])
         setCurrentQuestion(questionsArray[getRandomIndex(questionsArray)])
@@ -191,6 +199,7 @@ const MainGame = ({ userInfo }) => {
         setIsGameEndModalOpen(false)
         sessionStorage.removeItem('gameState')
         setIsMusicOn(false)
+        setSelectedAnswerIndex(null)
     }
 
     const exitGame = () => {
@@ -203,14 +212,22 @@ const MainGame = ({ userInfo }) => {
             <div className="question_title">{currentQuestion.question}</div>
             <div className="options_container">
                 <div className="options">
-                    <button className="option" onClick={() => handleAnswer(0)}>
+                    <button
+                        className="option"
+                        onClick={() => handleAnswer(0)}
+                        style={{ backgroundColor: getButtonColor(0) }}
+                    >
                         {currentQuestion.options[0] !== null ? (
                             <>
                                 <span>A:</span> {currentQuestion.options[0]}
                             </>
                         ) : null}
                     </button>
-                    <button className="option" onClick={() => handleAnswer(1)}>
+                    <button
+                        className="option"
+                        onClick={() => handleAnswer(1)}
+                        style={{ backgroundColor: getButtonColor(1) }}
+                    >
                         {currentQuestion.options[1] !== null ? (
                             <>
                                 <span>B:</span> {currentQuestion.options[1]}
@@ -219,14 +236,22 @@ const MainGame = ({ userInfo }) => {
                     </button>
                 </div>
                 <div className="options">
-                    <button className="option" onClick={() => handleAnswer(2)}>
+                    <button
+                        className="option"
+                        onClick={() => handleAnswer(2)}
+                        style={{ backgroundColor: getButtonColor(2) }}
+                    >
                         {currentQuestion.options[2] !== null ? (
                             <>
                                 <span>C:</span> {currentQuestion.options[2]}
                             </>
                         ) : null}
                     </button>
-                    <button className="option" onClick={() => handleAnswer(3)}>
+                    <button
+                        className="option"
+                        onClick={() => handleAnswer(3)}
+                        style={{ backgroundColor: getButtonColor(3) }}
+                    >
                         {currentQuestion.options[3] !== null ? (
                             <>
                                 <span>D:</span> {currentQuestion.options[3]}
