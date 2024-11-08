@@ -20,3 +20,19 @@
     border-top-right-radius: 12px;
     padding: 12px;
 }
+
+@media(max-width:600px) {
+    .auth_wrapper{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form_container {
+        width: 80%;
+    }
+
+    .banner_container {
+        display: none;
+    }
+}
