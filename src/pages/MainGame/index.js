@@ -9,6 +9,7 @@ import GameEndModal from "../../components/GameEndModal"
 import correctAnswerSound from '../../core/Sounds-Logic/sounds/correct-answer-sound.mp3'
 import wrongAnswerSound from '../../core/Sounds-Logic/sounds/wrong-answer-sound.mp3'
 import './index.css'
+import { Button } from "antd"
 
 const getRandomIndex = (array) => Math.floor(Math.random() * array.length)
 
@@ -269,6 +270,7 @@ const MainGame = ({ userInfo }) => {
             </div>
             <div className="round_sound_container">
                 <div className="round_container">{Math.min(correctAnswerCount + 1, 12)}/12</div>
+                <Button type="primary" onClick={exitGame}>Exit</Button>
                 <div className="sound-_toggle" onClick={toggleMusic}>{isMusicOn ? <SoundOutlined className="sound_icon" /> : <MutedOutlined className="sound_icon" />}</div>
             </div>
 
