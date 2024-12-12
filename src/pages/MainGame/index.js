@@ -8,8 +8,9 @@ import { SoundOutlined, MutedOutlined } from '@ant-design/icons'
 import GameEndModal from "../../components/GameEndModal"
 import correctAnswerSound from '../../core/Sounds-Logic/sounds/correct-answer-sound.mp3'
 import wrongAnswerSound from '../../core/Sounds-Logic/sounds/wrong-answer-sound.mp3'
-import './index.css'
 import { Button } from "antd"
+import './index.css'
+
 
 const getRandomIndex = (array) => Math.floor(Math.random() * array.length)
 
@@ -34,7 +35,9 @@ const MainGame = ({ userInfo }) => {
         } else {
             stopBackgroundMusic()
         }
+    }, [isMusicOn])
 
+    useEffect(() => {
         const savedGameState = JSON.parse(sessionStorage.getItem('gameState'))
 
         if (savedGameState) {
@@ -48,7 +51,7 @@ const MainGame = ({ userInfo }) => {
             setRemainingQuestions([...questionsArray])
             setCurrentQuestion(initialQuestion)
         }
-    }, [isMusicOn])
+    }, [])
 
     const updateGameStateInSessionStorage = useCallback(() => {
         const gameState = {
@@ -117,13 +120,11 @@ const MainGame = ({ userInfo }) => {
 
         if (questionData.isCorrect) {
             playSound(correctAnswerSound)
-            const newCorrectAnswerCount = correctAnswerCount + 1
-            setCorrectAnswerCount(newCorrectAnswerCount)
-            const newPrizeAmount = Math.min(prizeAmount * 2, 1000000)
-            setPrizeAmount(newPrizeAmount)
+            setCorrectAnswerCount((prevCount) => prevCount + 1)
+            setPrizeAmount((prevPrizeAmount) => Math.min(prevPrizeAmount * 2, 1000000))
 
 
-            if (newCorrectAnswerCount === 12) {
+            if (correctAnswerCount === 11) {
                 setGameEndMessage(`Congratulations! You won ${prizeAmount} AMD`)
                 setIsGameEndModalOpen(true)
                 await saveFinalScore(prizeAmount)
