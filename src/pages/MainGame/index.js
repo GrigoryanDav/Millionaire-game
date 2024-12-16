@@ -12,6 +12,7 @@ import { Button } from "antd"
 import './index.css'
 
 
+// Helper function to get a random index from the array
 const getRandomIndex = (array) => Math.floor(Math.random() * array.length)
 
 const MainGame = ({ userInfo }) => {
@@ -37,6 +38,8 @@ const MainGame = ({ userInfo }) => {
         }
     }, [isMusicOn])
 
+
+    // Effect to load saved game state from sessionStorage if available
     useEffect(() => {
         const savedGameState = JSON.parse(sessionStorage.getItem('gameState'))
 
@@ -53,6 +56,8 @@ const MainGame = ({ userInfo }) => {
         }
     }, [])
 
+
+    // Save game state to sessionStorage to persist it across page reloads
     const updateGameStateInSessionStorage = useCallback(() => {
         const gameState = {
             remainingQuestions,
@@ -69,6 +74,7 @@ const MainGame = ({ userInfo }) => {
     }, [updateGameStateInSessionStorage])
 
 
+    // Function to save the quiz progress to Firebase
     const saveQuizProgress = async (questionData) => {
         try {
             const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid)
@@ -80,6 +86,8 @@ const MainGame = ({ userInfo }) => {
         }
     }
 
+
+    // Function to save the final score to Firebase
     const saveFinalScore = async (finalScore) => {
         try {
             const userRef = doc(db, FIRESTORE_PATH_NAMES.REGISTERED_USERS, uid)
@@ -91,6 +99,8 @@ const MainGame = ({ userInfo }) => {
         }
     }
 
+
+    // Get fixed winning amount based on the prize
     const getFixedWinningAmount = (prizeAmount) => {
         for (let i = fixedWinningMoney.length - 1; i >= 0; i--) {
             if (prizeAmount >= fixedWinningMoney[i]) {
@@ -124,6 +134,7 @@ const MainGame = ({ userInfo }) => {
             setPrizeAmount((prevPrizeAmount) => Math.min(prevPrizeAmount * 2, 1000000))
 
 
+            // Check if the player has won the game
             if (correctAnswerCount === 11) {
                 setGameEndMessage(`Congratulations! You won ${prizeAmount} AMD`)
                 setIsGameEndModalOpen(true)
@@ -142,6 +153,8 @@ const MainGame = ({ userInfo }) => {
         }
     }
 
+
+    // Move to the next question after a valid answer
     const moveToNextQuestion = () => {
         const newRemainingQuestions = remainingQuestions.filter(q => q !== currentQuestion)
         setRemainingQuestions(newRemainingQuestions)
@@ -156,6 +169,8 @@ const MainGame = ({ userInfo }) => {
         }
     }
 
+
+    // Handle 50/50 help, removing two incorrect options
     const handlefiftyFifty = () => {
         if (!isHelpUsed.fiftyFifty) {
             const correctAnswerIndex = currentQuestion.correctAnswer
