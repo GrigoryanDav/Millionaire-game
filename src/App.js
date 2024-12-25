@@ -9,7 +9,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import LoadingWrapper from "./components/LoadingWrapper";
 import MainGame from "./pages/MainGame";
-import MainLayout from "./components/MainLayout";
+import MainLayout from "./pages/MainLayout";
 import Register from "./pages/Register";
 import './styles/global.css'
 
